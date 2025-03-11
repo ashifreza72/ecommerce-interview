@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "build": "echo \"No build step required for backend\"",
+    "build": "npm install mysql2 && echo \"No build step required for backend\"",
     "dev": "nodemon index.js"
   }
 }

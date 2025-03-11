@@ -7,7 +7,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: '*', // Allow all origins in production
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -15,7 +15,7 @@ app.use(cors({
 app.use(express.json());
 
 // Only create uploads directory in development
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.VERCEL_ENV !== 'production') {
   const fs = require('fs');
   const uploadsDir = path.join(__dirname, 'uploads');
   if (!fs.existsSync(uploadsDir)) {
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error:', err.message);
   if (err.name === 'MulterError') {
     return res.status(400).json({ 
       message: 'File upload error',
@@ -56,8 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server only in development
-// In production, we export the app for serverless
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.VERCEL_ENV !== 'production') {
   const sequelize = require('./config/db');
   const PORT = process.env.PORT || 5000;
   
@@ -65,6 +64,9 @@ if (process.env.NODE_ENV !== 'production') {
     console.log('MySQL Database Synced');
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   });
+} else {
+  // In production, just export the app for serverless
+  console.log('Running in production mode - skipping database sync');
 }
 
 // Export for serverless
