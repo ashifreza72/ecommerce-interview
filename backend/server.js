@@ -19,15 +19,20 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Serve static files from uploads directory with proper MIME types
-app.use('/uploads', express.static(uploadsDir, {
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
-      res.setHeader('Content-Type', 'image/jpeg');
-    } else if (filePath.endsWith('.png')) {
-      res.setHeader('Content-Type', 'image/png');
-    }
-  }
-}));
+app.use(
+  '/uploads',
+  express.static(uploadsDir, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
+        res.setHeader('Content-Type', 'image/jpeg');
+      } else if (filePath.endsWith('.png')) {
+        res.setHeader('Content-Type', 'image/png');
+      } else if (filePath.endsWith('.gif')) {
+        res.setHeader('Content-Type', 'image/gif');
+      }
+    },
+  })
+);
 
 // Routes
 app.use('/api/products', productRoutes);
@@ -37,15 +42,15 @@ app.use('/api/admin', adminRoutes);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   if (err.name === 'MulterError') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: 'File upload error',
-      error: err.message 
+      error: err.message,
     });
   }
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       message: 'Invalid token',
-      error: err.message
+      error: err.message,
     });
   }
   res.status(500).json({ message: 'Something went wrong!' });
@@ -54,14 +59,15 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 // Sync database and start server
-sequelize.sync()
+sequelize
+  .sync()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Static files are being served from: ${uploadsDir}`);
     });
   })
-  .catch(err => {
+  .catch((err) => {
     console.error('Unable to connect to the database:', err);
   });
 
