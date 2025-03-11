@@ -11,17 +11,18 @@ const {
   deleteProduct,
 } = require('../controllers/productController');
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads')); // Save images in uploads directory
-  },
-  filename: (req, file, cb) => {
-    // Create unique filename with original extension
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Configure multer for memory storage in production
+const storage = process.env.NODE_ENV === 'production'
+  ? multer.memoryStorage() // Use memory storage in production
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../uploads'));
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+      }
+    });
 
 // Add file filter to only allow images
 const fileFilter = (req, file, cb) => {
