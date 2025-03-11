@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -18,7 +18,6 @@ export default function ProductList() {
   const [error, setError] = useState<string | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     fetchProducts();

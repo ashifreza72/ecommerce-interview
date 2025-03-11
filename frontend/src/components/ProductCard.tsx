@@ -10,7 +10,6 @@ interface ProductProps {
 }
 
 export default function ProductCard({
-  id, // Keep the id as is
   name,
   description,
   price,
