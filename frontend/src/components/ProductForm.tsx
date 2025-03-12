@@ -229,6 +229,8 @@ export default function ProductForm({
               <Image
                 src={imagePreview}
                 alt='Preview'
+                width={160}
+                height={160}
                 className='h-40 object-contain border rounded-md'
               />
             </div>
