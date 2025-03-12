@@ -69,7 +69,7 @@ export default function Navbar() {
             <li>
               <Link
                 href='/admin/login'
-                className='block hover:text-blue-200 flex items-center'
+                className='hover:text-blue-200 flex items-center'
                 onClick={() => setIsOpen(false)}
               >
                 <FaUserShield className='mr-1' /> Admin
